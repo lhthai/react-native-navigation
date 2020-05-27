@@ -47,11 +47,11 @@ const DrawerContent = props => {
             />
             <DrawerItem
               icon={({color, size}) => (
-                <Icon name="account-outline" color={color} size={size} />
+                <Icon name="bank-transfer" color={color} size={size} />
               )}
-              label="Profile"
+              label="Inventory Transfer"
               onPress={() => {
-                props.navigation.navigate('Detail');
+                props.navigation.navigate('Transfer');
               }}
             />
             <DrawerItem
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   section: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: 5,
   },
   paragraph: {
     fontWeight: 'bold',
