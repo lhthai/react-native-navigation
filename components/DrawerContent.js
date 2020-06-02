@@ -47,6 +47,24 @@ const DrawerContent = props => {
             />
             <DrawerItem
               icon={({color, size}) => (
+                <Icon name="bank-transfer-in" color={color} size={size} />
+              )}
+              label="Goods Receipt"
+              onPress={() => {
+                // props.navigation.navigate('Settings');
+              }}
+            />
+            <DrawerItem
+              icon={({color, size}) => (
+                <Icon name="bank-transfer-out" color={color} size={size} />
+              )}
+              label="Goods Issue"
+              onPress={() => {
+                // props.navigation.navigate('Account');
+              }}
+            />
+            <DrawerItem
+              icon={({color, size}) => (
                 <Icon name="bank-transfer" color={color} size={size} />
               )}
               label="Inventory Transfer"
@@ -56,20 +74,11 @@ const DrawerContent = props => {
             />
             <DrawerItem
               icon={({color, size}) => (
-                <Icon name="settings-outline" color={color} size={size} />
+                <Icon name="format-list-bulleted" color={color} size={size} />
               )}
-              label="Settings"
+              label="Physical Count"
               onPress={() => {
-                props.navigation.navigate('Settings');
-              }}
-            />
-            <DrawerItem
-              icon={({color, size}) => (
-                <Icon name="account-check-outline" color={color} size={size} />
-              )}
-              label="Support"
-              onPress={() => {
-                props.navigation.navigate('Account');
+                // props.navigation.navigate('Account');
               }}
             />
           </Drawer.Section>
@@ -83,7 +92,7 @@ const DrawerContent = props => {
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>
-      <Drawer.Section style={styles.bottomDrawerSection}>
+      {/* <Drawer.Section style={styles.bottomDrawerSection}>
         <DrawerItem
           icon={({color, size}) => (
             <Icon color={color} size={size} name="exit-to-app" />
@@ -91,7 +100,7 @@ const DrawerContent = props => {
           label="Sign Out"
           onPress={() => {}}
         />
-      </Drawer.Section>
+      </Drawer.Section> */}
     </View>
   );
 };
