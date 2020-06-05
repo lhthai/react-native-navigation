@@ -1,54 +1,68 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  SafeAreaView,
+  ScrollView
 } from 'react-native';
+import apiURL from '../../apiUrl'
 
-const TransferRequest = ({navigation}) => {
+const TransferRequest = ({ navigation }) => {
   const [docNo, setDocNo] = useState('');
-  const items = [
-    {DocNum: 1990, Lines: 5, Transfered: 3, DocDate: '2020-04-29T00:00:00'},
-    {DocNum: 1991, Lines: 10, Transfered: 3, DocDate: '2020-04-309T00:00:00'},
-    {DocNum: 1982, Lines: 12, Transfered: 10, DocDate: '2020-05-15T00:00:00'},
-    {DocNum: 1983, Lines: 20, Transfered: 0, DocDate: '2020-05-29T00:00:00'},
-  ];
+  const [items, setItems] = useState([])
+
+  const getItems = async () => {
+    try {
+      const { data } = await axios.get(`${apiURL}/api/inventorytransferrequest/`)
+      setItems(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getItems()
+  }, [])
 
   const fildteredItems = items.filter(item => {
     return (
-      item.DocNum.toString()
+      item.docNum.toString()
         .toLocaleLowerCase()
         .indexOf(docNo.toLowerCase()) !== -1
     );
   });
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <TextInput
         style={styles.input}
         placeholder="Search by Doc No."
         value={docNo}
         onChangeText={text => setDocNo(text)}
       />
+      <ScrollView>
+        {fildteredItems.map(item => (
+          <TouchableOpacity
+            style={styles.item}
+            key={item.docNum}
+            onPress={() => navigation.navigate('TransferRequestDetail', { docNum: item.docNum })}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text>Doc No: {item.docNum}</Text>
+              <Text>Date: {item.docDate.substring(0, 10)}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text>Lines: {item.lines}</Text>
+              <Text>Transfered: {item.transfered}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
 
-      {fildteredItems.map(item => (
-        <TouchableOpacity
-          style={styles.item}
-          key={item.DocNum}
-          onPress={() => navigation.navigate('TransferRequestDetail')}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text>Doc No.: {item.DocNum}</Text>
-            <Text>Date: {item.DocDate.substring(0, 10)}</Text>
-          </View>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text>Lines: {item.Lines}</Text>
-            <Text>Transfered: {item.Transfered}</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -1,76 +1,96 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Button,
+  SafeAreaView,
+  ScrollView,
   TextInput,
+  ToastAndroid,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import apiURL from '../../apiUrl'
 
-const TransferRequestDetail = ({navigation}) => {
-  const [batchCode, setBatchdcode] = useState('');
-  const items = [
-    {
-      DocEntry: 1945,
-      ItemCode: '1003000000100002',
-      Description: 'Solvent Acetone 98%',
-      LineNum: 2,
-      Quantity: 30,
-      TransferedQty: 0,
-      FromWhs: 'W02',
-      ToWhs: 'W07',
-      DocDate: '2020-04-29T00:00:00',
-    },
-    {
-      DocEntry: 1945,
-      ItemCode: '1005000100200004',
-      Description: 'Harderner 19-0400-000',
-      LineNum: 7,
-      Quantity: 30,
-      TransferedQty: 10,
-      FromWhs: 'W02',
-      ToWhs: 'W07',
-      DocDate: '2020-04-29T00:00:00',
-    },
-  ];
-  const [modalVisible, setModalVisible] = useState(false);
+const TransferRequestDetail = ({ route, navigation }) => {
+  const { docNum } = route.params;
+  const [batchCode, setBatchcode] = useState('');
+  const [items, setItems] = useState([])
+
+  const getItem = async () => {
+    try {
+      const { data } = await axios.get(`${apiURL}/api/inventorytransferrequest/${docNum}`)
+      setItems(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const itemExists = item => {
+    return items.some(el => el.itemCode == item)
+  }
+
+  useEffect(() => {
+    setBatchcode('')
+    getItem()
+  }, [])
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Search by Doc No."
+        placeholder="Item or Serial"
         value={batchCode}
-        onChangeText={text => setBatchdcode(text.split(',')[1])}
+        autoFocus
+        onChangeText={text => {
+          setBatchcode(text.split(',')[1])
+          if (itemExists(batchCode)) {
+            navigation.navigate('TransferRequestAdd')
+          } else if (batchCode && batchCode.length >= 15) {
+            let date = new Date()
+            let timestamp = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+            Alert.alert(
+              `Error ${date.toLocaleDateString()} ${timestamp}`,
+              "Invalid product!",
+              [
+                { text: "OK", onPress: () => setBatchcode('') }
+              ],
+              { cancelable: false }
+            );
+          }
+        }}
       />
-      {items.map(item => (
-        <TouchableOpacity
-          style={styles.item}
-          //   onPress={() => navigation.navigate('TransferRequestAdd')}
-          key={item.DocEntry + item.LineNum}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text>#{item.LineNum}</Text>
-            <Text>Item: {item.Description}</Text>
-          </View>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text>Open</Text>
-            <Text>
-              From: {item.FromWhs} - To: {item.ToWhs}
-            </Text>
-          </View>
-          <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-            <Text>Instock: 1000</Text>
-          </View>
-          <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-            <Text>
-              Transfered Quantity: {item.TransferedQty}/{item.Quantity}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      ))}
-    </View>
+      <ScrollView>
+        {items.map(item => (
+          <TouchableOpacity
+            style={styles.item}
+            //   onPress={() => navigation.navigate('TransferRequestAdd')}
+            key={item.docEntry + item.lineNum}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text>#{item.lineNum}</Text>
+              <Text >Item: {item.itemCode}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text>Open</Text>
+              <Text style={{ maxWidth: '75%' }}>Name: {item.dscription}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+              <Text>
+                From: {item.fromWhsCod} - To: {item.whsCode}
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text>
+                Quantity: 0/{item.quantity}
+              </Text>
+              <Text>Instock: {item.inStock}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -79,6 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   input: {
+    textAlign: "center",
     margin: 15,
     borderBottomColor: '#000000',
     borderBottomWidth: 1,

@@ -22,9 +22,9 @@ const TransferStack = ({navigation}) => (
     }}>
     <Stack.Screen
       name="Transfer"
-      component={TransferScreen}
+      component={TransferRequest}
       options={{
-        title: 'Inventory Transfer',
+        title: 'Transfer Request',
         headerTitleAlign: 'center',
         headerLeft: () => (
           <Icon.Button
@@ -36,11 +36,11 @@ const TransferStack = ({navigation}) => (
         ),
       }}
     />
-    <Stack.Screen
+    {/* <Stack.Screen
       name="TransferRequestList"
       component={TransferRequest}
       options={{title: 'Transfer Request List'}}
-    />
+    /> */}
     <Stack.Screen
       name="TransferRequestDetail"
       component={TransferRequestDetail}
