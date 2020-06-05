@@ -4,12 +4,13 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Modal,
+  Button,
   TextInput,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const TransferRequestDetail = ({navigation}) => {
+  const [batchCode, setBatchdcode] = useState('');
   const items = [
     {
       DocEntry: 1945,
@@ -38,6 +39,12 @@ const TransferRequestDetail = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Search by Doc No."
+        value={batchCode}
+        onChangeText={text => setBatchdcode(text.split(',')[1])}
+      />
       {items.map(item => (
         <TouchableOpacity
           style={styles.item}
@@ -61,17 +68,6 @@ const TransferRequestDetail = ({navigation}) => {
               Transfered Quantity: {item.TransferedQty}/{item.Quantity}
             </Text>
           </View>
-          <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-            <Icon name="minus-circle" size={20} color="#009387" />
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              //   placeholder="Quantity"
-              value={item}
-              //   onChangeText={text => setItem({...item, Quantity: text})}
-            />
-            <Icon name="plus-circle" size={20} color="#009387" />
-          </View>
         </TouchableOpacity>
       ))}
     </View>
@@ -83,8 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   input: {
-    margin: 0,
-    padding: 0,
+    margin: 15,
     borderBottomColor: '#000000',
     borderBottomWidth: 1,
     borderRadius: 5,
@@ -97,42 +92,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 5,
     marginHorizontal: 10,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  openButton: {
-    backgroundColor: '#F194FF',
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
   },
 });
 

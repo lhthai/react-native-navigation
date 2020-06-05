@@ -1,13 +1,11 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import TransferScreen from './TransferScreen';
 import TransferRequest from './TransferRequest';
 import TransferRequestDetail from './TransferRequestDetail';
-import TransferRequestAdd from './TransferRequestAdd';
+import AddItem from './AddItem';
 
 const Stack = createStackNavigator();
 
@@ -50,8 +48,8 @@ const TransferStack = ({navigation}) => (
     />
     <Stack.Screen
       name="TransferRequestAdd"
-      component={TransferRequestAdd}
-      options={{title: 'Add item'}}
+      component={AddItem}
+      options={{title: 'Add'}}
     />
   </Stack.Navigator>
 );
